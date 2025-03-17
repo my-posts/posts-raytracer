@@ -1,0 +1,115 @@
+---
+title: 2 - raytracer 프로젝트 - 수학적 배경
+description: 변환 행렬에 대해 더 자세히
+preview: ''
+tags:
+  - C
+  - 그래픽스
+  - 레이트레이싱
+  - raytracer
+categories:
+  - 튜토리얼
+  - 그래픽스
+  - 레이트레이싱
+type: default
+excerpt: 이전 글에서 벡터와 행렬에 대해 간단히 알아봤다. 이번 글에서 조금 더 자세히 알아보자. 벡터는 크기와 방향을 가진 양으로, 힘, 속도, 가속도 같은 방향성을 가진 양을 나타낸다.
+---
+
+!> 이 글은 [raytracer](/tags/raytracer) 시리즈입니다.
+
+이전 글에서 벡터와 행렬에 대해 간단히 알아봤다. 이번 글에서 조금 더 자세히 알아보자.
+
+## 목차 \{#TOC\}
+
+[TOC]
+
+## 벡터 \{#vector\}
+
+벡터는 크기와 방향을 가진 양으로, 힘, 속도, 가속도 같은 방향성을 가진 양을 나타낸다.
+
+벡터는 수들의 목록(배열)으로 표현될 수 있으며, 갹 숫자들은 그 벡터의 성분, 원소이다.
+
+### 벡터의 덧셈, 뺄셈 \{#vector-addition-and-subtraction\}
+
+벡터의 덧셈은 단순히 각 원소를 더한 것으로 정의된다.
+
+$$\mathbf{a} + \mathbf{b} = \begin{bmatrix} \mathbf{a}_x + \mathbf{b}_x & \mathbf{a}_y + \mathbf{b}_y & \mathbf{a}_z + \mathbf{b}_z \end{bmatrix}$$
+
+뺄셈도 마찬가지로 단순히 각 원소를 뺀 것으로 정의된다.
+
+$$\mathbf{a} - \mathbf{b} = \begin{bmatrix} \mathbf{a}_x - \mathbf{b}_x & \mathbf{a}_y - \mathbf{b}_y & \mathbf{a}_z - \mathbf{b}_z \end{bmatrix}$$
+
+### 벡터의 스칼라 곱 \{#vector-scalar-multiplication\}
+
+벡터의 스칼라 곱은 각 원소에 스칼라를 곱한 것으로 정의된다.
+
+$$\mathbf{v} k = \begin{bmatrix} \mathbf{v}_x k & \mathbf{v}_y k & \mathbf{v}_z k \end{bmatrix}$$
+
+벡터는 값이 여러개일 수 있다. 예를 들어 여기서는 3개. 스칼라란 값이 1개인 것을 말한다.
+
+### 벡터의 내적 \{#vector-dot\}
+
+벡터의 내적은 두 벡터 간의 스칼라 곱으로, 두 벡터의 각 원소를 곱한 것을 모두 더해서 스칼라 값을 얻는 연산이다.
+
+내적은 두 벡터의 각도와 관련이 있으며, 두 벡터가 서로 직각인 경우 내적의 결과는 0이 된다.
+
+$$\mathbf{a} \cdot \mathbf{b} = a_x b_x + a_y b_y + a_z b_z$$
+
+### 벡터의 외적 \{#vector-cross\}
+
+외적은 3차원과 7차원에서만 정의되는 특별한 연산이다. 두 벡터에 수직인 벡터를 얻을 수 있다.
+
+$$\mathbf{a} \times \mathbf{b} = \begin{bmatrix} a_y b_z - a_z b_y & a_z b_x - a_x b_z & a_x b_y - a_y b_x \end{bmatrix}$$
+
+### 벡터의 길이 \{#vector-length\}
+
+길이는 피타고라스의 정리에 따라 각 원소의 제곱을 모두 더한 것의 제곱근으로 구할 수 있다.
+
+$$\|\mathbf{v}\| = \sqrt{\mathbf{v}_x^2 + \mathbf{v}_y^2 + \mathbf{v}_z^2}$$
+
+### 벡터의 정규화 \{#vector-normalize\}
+
+벡터를 그 벡터의 길이로 나눈, 길이가 1인 벡터를 단위 벡터라고 한다.
+
+$$\hat{\mathbf{v}} = \frac{\mathbf{v}}{\|\mathbf{v}\|} = \begin{bmatrix} \frac{v_x}{\|\mathbf{v}\|} & \frac{v_y}{\|\mathbf{v}\|} & \frac{v_z}{\|\mathbf{v}\|} \end{bmatrix}$$
+
+단위 벡터의 방향은 원본 벡터와 동일하다. 방향 벡터를 구하는 데 사용된다.
+
+## 행렬 \{#matrix\}
+
+행렬은 숫자들이 행과 열로 이루어진 직사각형 배열(2차원 배열)이다.
+
+### 행렬의 곱셈 \{#matrix-multiplication\}
+
+행렬의 곱 $$AB$$의 각 원소는 $$A$$의 해당 행을 이루는 벡터와 $$B$$의 해당 행을 이루는 벡터의 내적이 된다.
+
+$$A \times B$$ 행렬은 $$B \times C$$ 행렬과 곱할 수 있으며, 결과는 $$A \times C$$ 행렬이 된다.
+
+$$2 \times 3$$ 행렬 $$A$$와 $$3 \times 4$$ 행렬 $$B$$를 곱하면 결과는 $$2 \times 4$$ 행렬이 된다.
+
+예를 들어 $$A$$와 $$B$$가 이렇게 된다면,
+
+- $$A = \begin{bmatrix} a_{11} & a_{12} & a_{13} \\ a_{21} & a_{22} & a_{23} \end{bmatrix}$$
+- $$B = \begin{bmatrix} b_{11} & b_{12} & b_{13} & b_{14} \\ b_{21} & b_{22} & b_{23} & b_{24} \\ b_{31} & b_{32} & b_{33} & b_{34} \end{bmatrix}$$
+
+결과 행렬 $$AB$$는 이렇게 계산된다.
+
+$$$
+AB = \begin{bmatrix}
+a_{11}b_{11} + a_{12}b_{21} + a_{13}b_{31} & a_{11}b_{12} + a_{12}b_{22} + a_{13}b_{32} & a_{11}b_{13} + a_{12}b_{23} + a_{13}b_{33} & a_{11}b_{14} + a_{12}b_{24} + a_{13}b_{34} \\
+a_{21}b_{11} + a_{22}b_{21} + a_{23}b_{31} & a_{21}b_{12} + a_{22}b_{22} + a_{23}b_{32} & a_{21}b_{13} + a_{22}b_{23} + a_{23}b_{33} & a_{21}b_{14} + a_{22}b_{24} + a_{23}b_{34}
+\end{bmatrix}
+$$$
+
+$$A \times B$$ 행렬과 $$B \times C$$ 행렬을 곱한 결과는 $$A \times C$$ 행렬이 된다고 했는데,
+$$A$$와 $$C$$가 다르다면 $$B \times C$$ 행렬은 $$A \times B$$ 행렬과 곱할 수 없다.
+
+즉, 행렬 $$A$$와 $$B$$가 있을 때, 그 둘을 곱한 $$AB$$와 $$BA$$가 다를 수 있다.
+
+그러므로 행렬은 곱하는 순서가 중요하다.
+
+## 변환 행렬 \{#transformation-matrix\}
+
+크기 조절, 회전, 이동 등 다양한 변환을 벡터에 행렬을 곱함으로써 적용할 수 있다.
+
+여러가지 변환을 적용한다면, 적용하는 순서에 따라 다른 결과가 나올 수 있는데, 이는 

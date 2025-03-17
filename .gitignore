@@ -1,0 +1,9 @@
+# blog
+/out
+
+# node
+/node_modules
+/package-lock.json
+
+# custom
+/compile_commands.json
