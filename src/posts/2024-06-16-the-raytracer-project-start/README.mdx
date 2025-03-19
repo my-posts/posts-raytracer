@@ -27,25 +27,25 @@ excerpt: 레이트레이싱은 픽셀마다 광선을 발사해서, 그 광선�
 
 BMP 출력은 궁금하다면 [이 글](/posts/2024-06-14-c-bmp-output)을 참고하자. [`bmp.c`, `bmp.h`](https://gist.github.com/mjy9088/d83644effad787701d5569d4a05d4cbe)를 그대로 사용할 것이다.
 
-```c file=../../embed/c/raytracer/write_image.h title="write_image.h"
+```c file=../../embed/write_image.h title="write_image.h"
 ```
 
 일단 간단한 이미지 출력 함수를 작성해보자
 
-```c file=../../embed/c/raytracer/write_image.c title="write_image.c"
+```c file=../../embed/write_image.c title="write_image.c"
 ```
 
 이미지를 한 픽셀씩 그리는 함수 `renderer_t`를 받고, 이미지 파일로 출력하면서 어디까지 진행됐는지 출력하는 함수이다.
 
-```c file=../../embed/c/raytracer/2024-06-16-the-raytracer-project-start/0/main.c title="tmp/0/main.c"
+```c file=../../embed/2024-06-16-the-raytracer-project-start/0/main.c title="tmp/0/main.c"
 ```
 
 일단 아무 이미지나 나오게 만들어서, 아래 파일들로 테스트하면 아래 이미지가 나온다
 
-```cmake file=../../embed/c/raytracer/2024-06-16-the-raytracer-project-start/0/CMakeLists.txt title="tmp/0/CMakeLists.txt"
+```cmake file=../../embed/2024-06-16-the-raytracer-project-start/0/CMakeLists.txt title="tmp/0/CMakeLists.txt"
 ```
 
-```shell file=../../embed/c/raytracer/2024-06-16-the-raytracer-project-start/0/build.sh title="tmp/0/build.sh"
+```shell file=../../embed/2024-06-16-the-raytracer-project-start/0/build.sh title="tmp/0/build.sh"
 ```
 
 ![결과 이미지](./static/0.bmp)
@@ -67,7 +67,7 @@ BMP 출력은 궁금하다면 [이 글](/posts/2024-06-14-c-bmp-output)을 참�
 
 3차원 공간상의 위치와 방향을 나타낼 것이기에 3차원 벡터를 사용할 것이다.
 
-```c file=../../embed/c/raytracer/f3.h title="f3.h"
+```c file=../../embed/f3.h title="f3.h"
 ```
 
 여기서 normalize(정규화)는 길이가 1이 아닌 벡터의 길이를 1로 만드는 것이다.
@@ -90,7 +90,7 @@ dot(내적)과 cross(외적)는 벡터의 특수한 곱셈이다.
 
 여기서는 3\*3 행렬을 `f3x3`으로 정의한다.
 
-```c file=../../embed/c/raytracer/f3x3.h title="f3x3.h"
+```c file=../../embed/f3x3.h title="f3x3.h"
 ```
 
 행렬의 곱 $$AB$$의 각 원소는 $$A$$의 해당 행을 이루는 벡터와 $$B$$의 해당 행을 이루는 벡터의 내적이 된다.
@@ -109,10 +109,10 @@ transpose는 전치행렬을 의미한다. 행/열을 바꾼 것이다.
 
 구현은 대충 이렇다.
 
-```c file=../../embed/c/raytracer/f3.c title="f3.c"
+```c file=../../embed/f3.c title="f3.c"
 ```
 
-```c file=../../embed/c/raytracer/f3x3.c title="f3x3.c"
+```c file=../../embed/f3x3.c title="f3x3.c"
 ```
 
 벡터와 행렬에 대해서는 다음 글에서 더 자세히 알아보기로 하고 일단 넘어가자.
@@ -130,12 +130,12 @@ transpose는 전치행렬을 의미한다. 행/열을 바꾼 것이다.
 
 x가 오른쪽, y가 앞쪽, z가 위쪽인 좌표계를 생각해 보자.
 
-```c file=../../embed/c/raytracer/2024-06-16-the-raytracer-project-start/1/main.c title="tmp/1/main.c"
+```c file=../../embed/2024-06-16-the-raytracer-project-start/1/main.c title="tmp/1/main.c"
 ```
 
 ray(광선)를 만들고, origin(시작한 위치)가 0보다 작으면 검정색, 아니면 흰색의 이미지를 만들 것이다.
 
-```cmake file=../../embed/c/raytracer/2024-06-16-the-raytracer-project-start/1/CMakeLists.txt title="tmp/1/CMakeLists.txt"
+```cmake file=../../embed/2024-06-16-the-raytracer-project-start/1/CMakeLists.txt title="tmp/1/CMakeLists.txt"
 ```
 
 이하 `build.sh` 내용은 위의 `build.sh`와 동일.
@@ -150,7 +150,7 @@ ray(광선)를 만들고, origin(시작한 위치)가 0보다 작으면 검정�
 
 구와 광선의 충돌 확인을 통해 구를 렌더링 해 보자.
 
-```c file=../../embed/c/raytracer/2024-06-16-the-raytracer-project-start/2/main.c title="tmp/2/main.c"
+```c file=../../embed/2024-06-16-the-raytracer-project-start/2/main.c title="tmp/2/main.c"
 ```
 
 자세한 계산 과정은 주석 참고.

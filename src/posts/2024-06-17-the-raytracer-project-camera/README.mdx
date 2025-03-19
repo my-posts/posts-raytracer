@@ -30,12 +30,12 @@ import { Preview2 } from './components/Preview2';
 
 ## 유틸 \{#utils\}
 
-```c file=../../embed/c/raytracer/util.h title="util.h"
+```c file=../../embed/util.h title="util.h"
 ```
 
 우선 공통으로 쓰일 부분들을 따로 함수로 빼 두자.
 
-```c file=../../embed/c/raytracer/util.c title="util.c"
+```c file=../../embed/util.c title="util.c"
 ```
 
 ## 원근 카메라 \{#perspective-camera\}
@@ -95,12 +95,12 @@ import { Preview2 } from './components/Preview2';
 
 어쨌든 본격적으로 카메라를 구현해보자.
 
-```c file=../../embed/c/raytracer/ray.h title="ray.h"
+```c file=../../embed/ray.h title="ray.h"
 ```
 
 일단 `ray.h`를 공통으로 쓰도록 빼 두고,
 
-```c file=../../embed/c/raytracer/camera.h title="camera.h"
+```c file=../../embed/camera.h title="camera.h"
 ```
 
 카메라의 타입과 카메라를 만드는 함수를 선언한다.
@@ -113,7 +113,7 @@ import { Preview2 } from './components/Preview2';
 
 여기서 `camera_fov_mode_t`가 주어진 fov가 가로인지 세로인지 결정하는 데 쓰인다.
 
-```c file=../../embed/c/raytracer/perspective_camera.c title="perspective_camera.c"
+```c file=../../embed/perspective_camera.c title="perspective_camera.c"
 ```
 
 이렇게 카메라를 간단히 구현 후, 이 카메라를 적용해서 테스트 해 보자.
@@ -142,7 +142,7 @@ import { Preview2 } from './components/Preview2';
 
 ## 직교 카메라 \{#orthogonal-camera\}
 
-```c file=../../embed/c/raytracer/orthogonal_camera.c title="orthogonal_camera.c"
+```c file=../../embed/orthogonal_camera.c title="orthogonal_camera.c"
 ```
 
 직교 카메라는 origin이 픽셀의 화면상의 위치에 따라 적절히 떨어져 있으면 된다.

@@ -7,3 +7,4 @@
 
 # custom
 /compile_commands.json
+/.cache

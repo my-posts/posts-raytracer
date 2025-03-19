@@ -3,5 +3,8 @@
     "eliostruyf.vscode-front-matter",
     "esbenp.prettier-vscode",
     "unifiedjs.vscode-mdx",
+
+    "ms-vscode.cpptools",
+    "llvm-vs-code-extensions.vscode-clangd",
   ],
 }
