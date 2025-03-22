@@ -1,12 +1,17 @@
-import { execFile, spawn } from "node:child_process";
+import { spawn } from "node:child_process";
+import {
+  copyFile as fsCopyFile,
+  mkdir,
+  readdir,
+  stat,
+  writeFile,
+} from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { stderr } from "node:process";
-import { promisify } from "node:util";
+import readline from "node:readline";
 
 import { PostAttribute } from "@mjy-blog/theme-lib";
 import frontmatter from "front-matter";
-import { glob } from "glob";
-import { writeFile } from "node:fs/promises";
 
 import { existsSync } from "node:fs";
 import { compile } from "./compile";
@@ -81,52 +86,95 @@ interface CustomPostAttribute extends PostAttribute {
   excerpt: string;
 }
 
-const execFileAsync = promisify(execFile);
-
 async function execShFile(cwd: string, filePath: string): Promise<void> {
-  try {
-    const { stdout, stderr } = await execFileAsync("sh", [filePath], { cwd });
+  return new Promise((resolve, reject) => {
+    const child = spawn("sh", [filePath], { cwd });
 
-    if (stdout) {
-      console.log(`[execShFile stdout]: ${stdout}`);
-    }
+    const stdoutRl = readline.createInterface({ input: child.stdout });
+    const stderrRl = readline.createInterface({ input: child.stderr });
 
-    if (stderr) {
-      console.error(`[execShFile stderr]: ${stderr}`);
+    stdoutRl.on("line", (line) => {
+      if (process.env.VERBOSE) {
+        console.log(`[execShFile stdout]: ${line}`);
+      }
+    });
+
+    stderrRl.on("line", (line) => {
+      console.error(`[execShFile stderr]: ${line}`);
+    });
+
+    child.on("error", (error) => {
+      console.error(`[execShFile error]: ${error.message}`);
+      reject(error);
+    });
+
+    child.on("close", (code) => {
+      stdoutRl.close();
+      stderrRl.close();
+
+      if (code === 0) {
+        resolve();
+      } else {
+        const error = new Error(`Process exited with code ${code}`);
+        console.error(`[execShFile error]: ${error.message}`);
+        reject(error);
+      }
+    });
+  });
+}
+
+async function copyFile(src: string, dest: string): Promise<void> {
+  const stats = await stat(src);
+
+  if (stats.isDirectory()) {
+    await mkdir(dest, { recursive: true });
+
+    const entries = await readdir(src);
+
+    for (const entry of entries) {
+      const srcPath = join(src, entry);
+      const destPath = join(dest, entry);
+
+      await copyFile(srcPath, destPath);
     }
-  } catch (error: any) {
-    console.error(`[execShFile error]: ${error.message}`);
-    throw error;
+  } else if (stats.isFile()) {
+    await fsCopyFile(src, dest);
+    if (process.env.VERBOSE) {
+      console.log(`Copied file: ${src} -> ${dest}`);
+    }
+  } else {
+    console.warn(`Skipped: ${src} is not a file or directory`);
   }
 }
 
 (async () => {
-  const includes = (await glob("**/*.mdx", { cwd: "src/include" }))
-    .map((path) => path.replace(/\.mdx$/, ""))
-    .sort();
-  for (let i = 0; i < includes.length; i++) {
-    const path = includes[i];
-    console.log(`(${i + 1}/${includes.length}) compiling ${path}`);
-    const inPath = join("src/include", `${path}.mdx`);
-    const outPath = join("out/include", `${path}.js`);
-    await compile(inPath, outPath);
-  }
-
-  const articlePaths = await listPosts(resolve("src/posts"));
-  const articles: CorePost<CustomPostAttribute>[] = [];
-  for (let i = 0; i < articlePaths.length; i++) {
-    const path = articlePaths[i];
-    console.log(`(${i + 1}/${articlePaths.length}) compiling ${path}`);
+  const postPaths = await listPosts(resolve("src/posts"));
+  const posts: CorePost<CustomPostAttribute>[] = [];
+  for (let i = 0; i < postPaths.length; i++) {
+    const path = postPaths[i];
+    console.log(`(${i + 1}/${postPaths.length}) compiling ${path}`);
     const inPath = join("src/posts", path, "README.mdx");
     const outPath = join("out/posts", path, "page.js");
     if (existsSync(join("src/posts", path, "build.sh"))) {
       await execShFile(join("src/posts", path), "build.sh");
     }
+    if (existsSync(join("src/posts", path, "components"))) {
+      await copyFile(
+        join("src/posts", path, "components"),
+        join("out/posts", path, "components")
+      );
+    }
+    if (existsSync(join("src/posts", path, "static"))) {
+      await copyFile(
+        join("src/posts", path, "static"),
+        join("out/public", path, "static")
+      );
+    }
     const { content, tocItems } = await compile(inPath, outPath);
     const { attributes } = frontmatter<any>(content);
     attributes.createTime ??= await getCreateTime(inPath);
     attributes.updateTime ??= await getUpdateTime(inPath);
-    articles.push({
+    posts.push({
       path: join("posts", path, "page.js"),
       attributes,
       slug: path,
@@ -134,5 +182,5 @@ async function execShFile(cwd: string, filePath: string): Promise<void> {
     });
   }
   console.log("done.");
-  await writeFile("out/index.json", JSON.stringify(articles));
+  await writeFile("out/index.json", JSON.stringify(posts));
 })();
