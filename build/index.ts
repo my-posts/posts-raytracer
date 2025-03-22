@@ -152,7 +152,6 @@ async function copyFile(src: string, dest: string): Promise<void> {
   const posts: CorePost<CustomPostAttribute>[] = [];
   for (let i = 0; i < postPaths.length; i++) {
     const path = postPaths[i];
-    console.log(`(${i + 1}/${postPaths.length}) compiling ${path}`);
     const inPath = join("src/posts", path, "README.mdx");
     const outPath = join("out/posts", path, "page.js");
     if (existsSync(join("src/posts", path, "build.sh"))) {
@@ -180,7 +179,9 @@ async function copyFile(src: string, dest: string): Promise<void> {
       slug: path,
       tocItems,
     });
+    console.log(`(${i + 1}/${postPaths.length}) built ${path}`);
   }
-  console.log("done.");
+  await copyFile("src/scripts", "out/scripts");
   await writeFile("out/index.json", JSON.stringify(posts));
+  console.log("done.");
 })();

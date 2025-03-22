@@ -5,13 +5,13 @@ import { InteractiveCanvasOptionDescriptor } from "@my-posts/components-code/Int
 import { floatOption } from "@my-posts/components-code/option/floatOption";
 import { integerOption } from "@my-posts/components-code/option/integerOption";
 import { vec3Option } from "@my-posts/components-code/option/vec3Option";
-import { Direction } from "../../../scripts/Direction";
-import { normalize } from "../../../scripts/normalize";
-import { Position } from "../../../scripts/Position";
-import { Ray } from "../../../scripts/Ray";
-import { Sphere } from "../../../scripts/Sphere";
-import { sphereCollide } from "../../../scripts/sphereCollide";
-import { spheresOption } from "../../../scripts/spheresOption";
+import { Direction } from "../../../scripts/raytracer/Direction";
+import { normalize } from "../../../scripts/raytracer/normalize";
+import { Position } from "../../../scripts/raytracer/Position";
+import { Ray } from "../../../scripts/raytracer/Ray";
+import { Sphere } from "../../../scripts/raytracer/Sphere";
+import { sphereCollide } from "../../../scripts/raytracer/sphereCollide";
+import { spheresOption } from "../../../scripts/raytracer/spheresOption";
 
 interface State {
   "1-size": number;
@@ -25,7 +25,7 @@ const options: InteractiveCanvasOptionDescriptor<State> = {
   "1-size": integerOption("이미지 크기", 512, { max: 3840, min: 1 }),
   "2-perspective-camera-fov": floatOption(
     "카메라 시야각 (라디안)",
-    1.5707963267948966,
+    1.5707963267948966
   ),
   "3-camera-position": vec3Option("카메라 위치", [0, 0, 0]),
   // '4-camera-direction': normal3Option('카메라 방향', [0, 1, 0]),
@@ -57,7 +57,7 @@ function render({
         tanFov,
         cameraPosition,
         // cameraDirection,
-        spheres,
+        spheres
       );
 
       data[(y * size + x) * 4] = r;
@@ -75,7 +75,7 @@ function renderPixel(
   tanFov: number,
   cameraPosition: Position,
   // cameraDirection: Direction,
-  spheres: Sphere[],
+  spheres: Sphere[]
 ): [r: number, g: number, b: number] {
   const x = (2 * xOnImage - 1) * tanFov;
   const z = -(2 * yOnImage - 1) * tanFov;

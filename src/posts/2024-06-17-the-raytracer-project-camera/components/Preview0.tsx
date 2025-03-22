@@ -4,13 +4,13 @@ import { InteractiveCanvas } from "@my-posts/components-code/InteractiveCanvas";
 import { InteractiveCanvasOptionDescriptor } from "@my-posts/components-code/InteractiveCanvasOptionDescriptor";
 import { floatOption } from "@my-posts/components-code/option/floatOption";
 import { integerOption } from "@my-posts/components-code/option/integerOption";
-import { add } from "../../../scripts/add";
-import { Direction } from "../../../scripts/Direction";
-import { Position } from "../../../scripts/Position";
-import { Ray } from "../../../scripts/Ray";
-import { Sphere } from "../../../scripts/Sphere";
-import { sphereCollide } from "../../../scripts/sphereCollide";
-import { spheresOption } from "../../../scripts/spheresOption";
+import { add } from "../../../scripts/raytracer/add";
+import { Direction } from "../../../scripts/raytracer/Direction";
+import { Position } from "../../../scripts/raytracer/Position";
+import { Ray } from "../../../scripts/raytracer/Ray";
+import { Sphere } from "../../../scripts/raytracer/Sphere";
+import { sphereCollide } from "../../../scripts/raytracer/sphereCollide";
+import { spheresOption } from "../../../scripts/raytracer/spheresOption";
 
 interface State {
   "1-size": number;
@@ -49,7 +49,7 @@ function render({
         orthogonalCameraScale,
         cameraPosition,
         cameraDirection,
-        spheres,
+        spheres
       );
 
       data[(y * size + x) * 4] = r;
@@ -67,7 +67,7 @@ function renderPixel(
   orthogonalCameraScale: number,
   cameraPosition: Position,
   cameraDirection: Direction,
-  spheres: Sphere[],
+  spheres: Sphere[]
 ): [r: number, g: number, b: number] {
   const x = (2 * xOnImage - 1) * orthogonalCameraScale;
   const z = -(2 * yOnImage - 1) * orthogonalCameraScale;
